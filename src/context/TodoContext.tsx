@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Todo, TodoContextType } from "../types";
 import { toast } from "sonner";
+import { arrayBuffer } from "stream/consumers";
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
 
@@ -17,6 +18,7 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [todos, setTodos] = useState<Todo[]>(() => {
     // Load todos from localStorage on initial render
     const savedTodos = localStorage.getItem("todos");
+    
     if (savedTodos) {
       try {
         // Parse the saved todos, ensuring the createdAt property is a Date object
