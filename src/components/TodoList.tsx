@@ -18,7 +18,6 @@ const TodoList: React.FC = () => {
   if (todos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-center animate-fade-in">
-        <div className="text-4xl mb-2">📝</div>
         <h3 className="text-xl font-medium text-gray-800 mb-1">Your task list is empty</h3>
         <p className="text-gray-500">Add a new task to get started</p>
       </div>
