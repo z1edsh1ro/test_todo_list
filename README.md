@@ -10,10 +10,11 @@ This is a simple Todo List application built using react typescript for testing 
 - **Mark Todo as Completed**: Check tasks off once they are completed, providing a visual indication of completion.
 
 ## Installation
-```json
+1. **Install Dependencies:**
+```
 npm i
 ```
-
-```json
+2. **Run the Project Start the development server by running:**
+```
 npm run dev
 ```
