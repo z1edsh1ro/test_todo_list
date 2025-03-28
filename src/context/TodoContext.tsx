@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Todo, TodoContextType } from "../types";
-import { toast } from "sonner";
 
 const TodoContext = createContext<TodoContextType | undefined>(undefined);
 
@@ -18,19 +17,20 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Load todos from localStorage on initial render
     const savedTodos = localStorage.getItem("todos");
     
-    if (savedTodos) {
-      try {
-        // Parse the saved todos, ensuring the createdAt property is a Date object
-        return JSON.parse(savedTodos).map((todo: any) => ({
-          ...todo,
-          createdAt: new Date(todo.createdAt)
-        }));
-      } catch (e) {
-        console.error("Failed to parse saved todos", e);
-        return [];
-      }
+    // when fail
+    if (!savedTodos) 
+      return[]
+
+    try {
+      // Parse the saved todos, ensuring the createdAt property is a Date object
+      return JSON.parse(savedTodos).map((todo: any) => ({
+        ...todo,
+        createdAt: new Date(todo.createdAt)
+      }));
+    } catch (e) {
+      console.error("Failed to parse saved todos", e);
+      return [];
     }
-    return [];
   });
 
   // Save todos to localStorage whenever they change
@@ -49,7 +49,6 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     
     setTodos(prevTodos => [newTodo, ...prevTodos]);
-    toast.success("Task added");
   };
 
   const toggleTodo = (id: string) => {
@@ -64,14 +63,27 @@ export const TodoProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const deleteTodo = (id: string) => {
     setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
-    toast.success("Task removed");
+  };
+
+  const updateTodo = (id: string, newText: string) => {
+    setTodos(prevTodos => {
+      const updatedTodos = prevTodos.map(todo =>
+        todo.id === id ? { ...todo, text: newText } : todo
+      );
+  
+      // Save the updated todos list to localStorage
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+  
+      return updatedTodos;
+    });
   };
 
   const value = {
     todos,
     addTodo,
     toggleTodo,
-    deleteTodo
+    deleteTodo,
+    updateTodo,
   };
 
   return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;

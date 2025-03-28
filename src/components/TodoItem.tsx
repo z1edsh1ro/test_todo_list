@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Todo } from "../types";
 import { useTodoContext } from "../context/TodoContext";
-import { Trash2, Check } from "lucide-react";
+import { Trash2, Check, Edit, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +11,21 @@ interface TodoItemProps {
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
-  const { toggleTodo, deleteTodo } = useTodoContext();
+  const { toggleTodo, deleteTodo, updateTodo } = useTodoContext();
   const [isHovered, setIsHovered] = useState(false);
-  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState(todo.text);
+
+  const handleEdit = () => {
+    updateTodo(todo.id, editedText);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedText(todo.text);
+    setIsEditing(false);
+  };
+
   // Format the date
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     month: 'short',
@@ -61,7 +73,48 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
           {formattedDate}
         </p>
       </div>
-      
+      {isEditing ? (
+          <div className="flex flex-1 items-center gap-2">
+            <input
+              type="text"
+              value={editedText}
+              onChange={(e) => setEditedText(e.target.value)}
+              className="flex-1 border-b border-border/50 px-2 py-1 outline-none transition-all"
+              autoFocus
+            />
+            <div className="flex items-center gap-1">
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={handleEdit}
+                className="h-8 w-8 text-muted-foreground hover:text-primary"
+              >
+                <Check className="h-4 w-4" />
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={handleCancel}
+                className="flex items-center justify-center w-8 h-8 text-gray-400 hover:text-destructive rounded-full transition-colors duration-200"
+              >
+                <X className="h-4 w-4" />
+              </motion.button>
+            </div>
+          </div>
+        ) : (
+          <>
+      <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setIsEditing(true)}
+          className="h-8 w-8 text-muted-foreground hover:text-primary"
+          disabled={todo.completed}
+        >
+          <Edit className="h-4 w-4" />
+        </motion.button>
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: isHovered ? 1 : 0 }}
@@ -72,6 +125,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
       >
         <Trash2 className="h-4 w-4" />
       </motion.button>
+          </>)}
     </motion.div>
   );
 };
