@@ -1,12 +1,5 @@
 # TODO LIST
 
-## Info
-Name (Eng): Krirk Klomkliang
-
-Name (Thai): เกริก กลมเกลี้ยง
-
-Email: krirk.klomkliang@gmail.com
-
 ## Description
 This is a simple Todo List application built using react typescript for testing the Skuberg company
 
